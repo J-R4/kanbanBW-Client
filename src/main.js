@@ -1,18 +1,13 @@
-const app = new Vue({
-    el: `#kanban-app`,
-    data: {
-        page: `welcome-login`,
-        logEmail: ``,
-        logPass: ``,
-        regEmail: ``,
-        regPass: ``,
-    },
-    methods: {
-        changePage: function (to) {
-            this.page = to;
-        },
-    },
-});
+import Vue from 'vue';
+import Buefy from 'buefy';
+import App from './app.vue';
+
+import 'buefy/dist/buefy.css';
+
+Vue.use(Buefy);
+new Vue({
+    render: (h) => h(App),
+}).$mount('#kanbanBW-app');
 
 /**
  * v-text="" or {{ }}
