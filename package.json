@@ -19,9 +19,13 @@
   "homepage": "https://github.com/J-R4/kanban-client#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "bootstrap": "^4.6.0",
     "buefy": "^0.9.4",
+    "bulma": "^0.9.1",
     "nuxt-buefy": "^0.4.4",
     "vue": "^2.6.12",
+    "vue-axios": "^3.2.4",
+    "vue-google-login": "^2.0.5",
     "vue-hot-reload-api": "^2.3.4"
   },
   "devDependencies": {

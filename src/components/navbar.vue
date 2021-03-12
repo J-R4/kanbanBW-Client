@@ -3,15 +3,10 @@
       <nav class="navbar is-light is-transparent">
             <div class="navbar-brand">
                 <a class="navbar-item" href="" style="padding: 20px;"
-                    @click.prevent="changePage('welcome-login')">
-                    <img src="./resources/KanBanBW.png" alt="when organizing is done in black and white"
+                    @click.prevent="changePage('home-page')">
+                    <img src="../resources/KanBanBW.png" alt="when organizing is done in black and white"
                         width="50" height="28">
                 </a>
-                <div class="navbar-burger" data-target="navbarExampleTransparentExample">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
             </div>
 
             <div id="navbarExampleTransparentExample" class="navbar-menu" style="margin-right: -4.75rem;">
@@ -21,24 +16,22 @@
                 </div>
 
                 <div class="navbar-end">
-                    <div class="navbar-item">
-                        <div class="field is-grouped">
-                            <p class="control">
-                                <a class="button is-black" href="">
-                                    <span class="icon">
-                                        <i class="far fa-plus-square"></i>
-                                    </span>
-                                    <span>new task</span>
-                                </a>
-                            </p>
-                            <p class="control">
-                                <a class="button is-white" href="" @click.prevent="changePage('welcome-login')">
-                                    <span class="icon">
-                                        <i class="fas fa-sign-out-alt"></i>
-                                    </span>
-                                    <span>logout</span>
-                                </a>
-                            </p>
+                    <div class="navbar-item" style="margin-right: 75px;">
+                        <div class="control">
+                            <a class="button is-black" @click.prevent="changePage('add-page')">
+                                <span class="icon">
+                                    <i class="far fa-plus-square"></i>
+                                </span>
+                                <span>add task</span>
+                            </a>
+                        </div>
+                        <div class="control">
+                            <a class="button is-white" @click="logout">
+                                <span class="icon">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                                <span>logout</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -49,7 +42,15 @@
 
 <script>
 export default {
-    name: `navbar`
+    name: `navbar`,
+    methods: {
+        logout(){
+            this.$emit(`emitLogout`)
+        },
+        changePage(page){
+            this.$emit(`changePage`,page)
+        }
+    }
 }
 </script>
 

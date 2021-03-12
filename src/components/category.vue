@@ -1,27 +1,37 @@
 <template>
   <div>
-    <div class="theCard-sub subtitle is-5">{{category}}</div>
-    <Task v-for="task in task" :key="task.id"
-    :task='task'
-    ></Task>
+      <div class="column" style="margin: 8px; padding:8px;">
+        <div class="theCard-sub subtitle is-5">{{category}}</div>
+        <div v-for="task in tasks" :key="task.id">
+          <Task v-if="task.category === category"
+          :task='task'
+          ></Task>
+        </div>
+      </div>
   </div>
 </template>
 
 <script>
+import Task from "../components/task.vue"
+
 export default {
     name: `category`,
     components: {
         Task
     },
-    props:[`category`,`task`],
+    props:[`category`,`tasks`],
     data() {
         return {
-            task: []
+        }
+    },
+    methods: {
+        changePage(page){
+            this.$emit(`changePage`,page)
         }
     }
 }
 </script>
 
 <style>
-
+  
 </style>

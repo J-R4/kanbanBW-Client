@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="theCard card-content">Do some kickflip</div>
+    <div class="theCard card-content">{{task.title}}</div>
   </div>
 </template>
 
