@@ -64,7 +64,7 @@
                                 <br><br>
                                 <div>
                                     <div>
-                                        <GoogleLogin :params="params" :onSuccess="onSuccess" :onFailure="onFailure"><i class="fab fa-google"></i> Google Sign-in </GoogleLogin>
+                                        <button v-google-signin-button="clientId" class="google-signin-button"> <i class="fab fa-google"></i> Google Sign-in</button>
                                     </div>
                                 </div>
                             </form>
@@ -79,23 +79,37 @@
 </template>
 
 <script>
-import GoogleLogin from 'vue-google-login';
+import GoogleSignInButton from 'vue-google-signin-button-directive'
+// import GoogleLogin from 'vue-google-login';
 
 export default {
     name: `login`,
     components: {
-        GoogleLogin
+        GoogleSignInButton
     },
     data() {
         return {
             params: {
-                    client_id: "641781171342-18velpmujtc06m2n7gtlbsfcnaqhpj1o.apps.googleusercontent.com"
+                    clientId: "641781171342-18velpmujtc06m2n7gtlbsfcnaqhpj1o.apps.googleusercontent.com"
                 },
             email:``,
             password:``
         }
     },
     methods: {
+        OnGoogleAuthSuccess (idToken) {
+            // Receive the idToken and make your magic with the backend
+            this.$emit(`onGoogle`,idToken)
+        },
+        OnGoogleAuthFail (error) {
+            console.log(error)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'There is something wrong with your Google sign in !',
+                footer: '<a href>Please contact J-R4 for further info.</a>'
+            })
+        },
         changePage(page){
             this.$emit(`changePage`,page)
         },

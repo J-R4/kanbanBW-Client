@@ -34,7 +34,7 @@
                               <option>Backlog</option>
                               <option>Todo</option>
                               <option>Doing</option>
-                              <option>Completed</option>
+                              <option>Done</option>
                             </select>
                           </div>
                       </div>

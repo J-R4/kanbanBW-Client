@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="box" style="margin: 0px; padding:3px; border-radius: 10px;">
       <nav class="navbar is-light is-transparent">
             <div class="navbar-brand">
                 <a class="navbar-item" href="" style="padding: 20px;"
@@ -12,6 +12,7 @@
             <div id="navbarExampleTransparentExample" class="navbar-menu" style="margin-right: -4.75rem;">
                 <div class="navbar-start">
                     <a id="link-home" class="navbar-item" href="#">
+                        <a class="button is-white is-small" href="https://www.youtube.com/watch?v=BTodGJB1ckA&ab_channel=Spagaga">henlo :)</a>
                     </a>
                 </div>
 

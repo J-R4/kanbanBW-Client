@@ -13,8 +13,10 @@
                     :category='category.type'
                     :tasks='tasks'
                     :theId='theId'
+                    :theEmail="theEmail"
                     @editOne='editOne'
                     @deleteOne='deleteOne'
+                    @moveOne='moveOne'
                     ></Category>
                 </div>
                 <!-- this is the end of kanban content -->
@@ -31,7 +33,7 @@ import Category from "../components/category.vue"
 
 export default {
     name: `home`,
-    props: [`tasks`,`theId`],
+    props: [`tasks`,`theId`,`theEmail`],
     components: {
         Navbar, Category
     },
@@ -53,6 +55,9 @@ export default {
         },
         deleteOne(id){
             this.$emit(`deleteOne`,id)
+        },
+        moveOne(cat){
+            this.$emit(`moveOne`,cat)
         }
     },
   mounted: function(){

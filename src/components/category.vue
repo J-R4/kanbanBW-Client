@@ -1,7 +1,7 @@
 <template>
   <div>
       <div class="column" style="margin: 8px; padding:8px;">
-        <div class="box theCard-sub title is-4" style="margin-top: 20px;
+        <div class="box theCard-sub title is-4" style="margin-top: 0px;
         background-color: black !important;
         border-color: white !important;
         color: white !important;
@@ -13,8 +13,12 @@
           <Task v-if="task.category === category"
           :task='task'
           :theId='theId'
+          :theEmail="theEmail"
+          :categories="categories"
+          :category="category"
           @editOne='editOne'
           @deleteOne='deleteOne'
+          @moveOne='moveOne'
           ></Task>
         </div>
         </div>
@@ -30,7 +34,7 @@ export default {
     components: {
         Task
     },
-    props:[`category`,`tasks`,`theId`],
+    props:[`category`,`tasks`,`theId`,`categories`,`theEmail`],
     data() {
         return {
         }
@@ -41,6 +45,9 @@ export default {
       },
       deleteOne(id){
         this.$emit(`deleteOne`,id)
+      },
+      moveOne(cat){
+        this.$emit(`moveOne`,cat)
       }
     }
 }

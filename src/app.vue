@@ -3,6 +3,7 @@
         <Login v-if="page === `login-page`" 
         @login="login" 
         @changePage="changePage"
+        @onGoogle="onGoogle"
         ></Login>
 
         <Register v-else-if="page === `register-page`" 
@@ -13,11 +14,13 @@
         <Home v-else-if="page === `home-page`" 
         :tasks="tasks"
         :theId="theId"
+        :theEmail="theEmail"
         @changePage="changePage"
         @logout="logout"
         @showTasks="showTasks"
         @editOne='editOne'
         @deleteOne='deleteOne'
+        @moveOne='moveOne'
         ></Home>
 
         <AddTask v-else-if="page === `add-page`"
@@ -31,6 +34,12 @@
         :theId="theId"
         ></EditTask>
 
+        <div v-else>
+            <div class="has-text-centered">
+                <a class="button is-black" href="https://www.youtube.com/watch?v=BTodGJB1ckA&ab_channel=Spagaga">henlo :)</a>
+                if you are confused and need help please contact J-R4 or.. click it, you know what i mean :)
+            </div>
+        </div>
     </div>
 </template>
 
@@ -55,7 +64,9 @@ export default {
                 page: `login-page`,
                 tasks: [],
                 baseURL: `http://localhost:3000/`,
-                theId: 0
+                theId: 0,
+                theEmail: ``,
+                isGoogle: false
             }
         },
     methods: {
@@ -67,10 +78,22 @@ export default {
         },
         deleteOne(id){
             if(id){
-                console.log(id,'ini masuk deleteOne dan masuk the idnya <<<<')
                 this.theId = id
                 this.deleteTask(this.theId)
                 this.page = `home-page`
+            }
+        },
+        moveOne(cat){
+            if(cat){
+                console.log(cat,'ini masuk moveOne dan masuk the cat <<<<')
+                this.theId = cat.id
+                this.moveTheTask(cat)
+                this.page = `home-page`
+            }
+        },
+        onGoogle(google_token){
+            if(google_token){
+                this.googleLogin(google_token)
             }
         },
         changePage: function (to) {
@@ -94,6 +117,7 @@ export default {
                     })
                     localStorage.setItem('access_token',response.data.access_token)
                     this.page = `home-page`
+                    this.theEmail = email
                     this.showTasks()
                 })
                 .catch((err) => {
@@ -104,6 +128,39 @@ export default {
                         text: 'Email/Password is wrong!',
                         footer: '<a href>Please contact J-R4 for further info.</a>'
                     })
+                })
+        },
+        googleLogin(input){
+            axios({
+                method: 'POST',
+                url: baseURL + '/oAuth',
+                data: {
+                    google_token: input,
+                },
+            })
+                .then((response) => {
+                    console.log(response)
+                    Swal.fire({
+                        title: "Good job!",
+                        text: "You have been logged in!",
+                        icon: "success",
+                    })
+                    localStorage.setItem('access_token',response.data.access_token)
+                    this.page = `home-page`
+                    this.isGoogle = true
+                    this.showTasks()
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email/Password is wrong!',
+                        footer: '<a href>Please contact J-R4 for further info.</a>'
+                    })
+                })
+                .finally(()=>{
+
                 })
         },
         register(input){
@@ -185,9 +242,9 @@ export default {
                 })
         },
         getOneTask(input){
-            const {id,title,category} = input
+            const id = input
             axios({
-                method: `PATCH`,
+                method: `GET`,
                 url: baseURL + `tasks/` + id,
                 headers: { access_token: localStorage.access_token },
             })
@@ -255,7 +312,7 @@ export default {
                         text: "You have move the task !",
                         icon: "success",
                     })
-                    this.page = `home-page`
+                    this.showTasks()
                 })
                 .catch((err) => {
                     console.log(err)
@@ -300,23 +357,38 @@ export default {
                 })
         },
         logout(){
-            Swal.fire({
-                title: "Thank You!",
-                text: "Glad to have you here, see you soon Good People :)",
-                icon: "success",
-            })
-            localStorage.removeItem('access_token')
-            this.page = `login-page`
-        }
-    },
-    beforeCreated(){
-        if(localStorage.getItem('access_token')){
-            this.page =`home-page`
+            if(this.isGoogle){
+                var auth2 = gapi.auth2.getAuthInstance();
+                
+                auth2.signOut().then(function () {
+                    console.log('User signed out.');
+                });
+
+                Swal.fire({
+                    title: "Thank You!",
+                    text: "Glad to have you here, see you soon Good People :)",
+                    icon: "success",
+                })
+                
+                localStorage.removeItem('access_token')
+                this.isGoogle = false
+                this.page = `login-page`
+            } else {
+                Swal.fire({
+                    title: "Thank You!",
+                    text: "Glad to have you here, see you soon Good People :)",
+                    icon: "success",
+                })
+                localStorage.removeItem('access_token')
+                this.page = `login-page`
+            }
         }
     },
     created(){
         if(localStorage.getItem('access_token')){
             this.page =`home-page`
+        } else if(!localStorage.promo){
+            console.log(`masuk`)
         }
     }
 };
