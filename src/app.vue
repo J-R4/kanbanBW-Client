@@ -11,13 +11,13 @@
         ></Register>
 
         <Home v-else-if="page === `home-page`" 
+        :tasks="tasks"
+        :theId="theId"
         @changePage="changePage"
         @logout="logout"
-        :tasks="tasks"
-        :moveTasks="tasks"
-        :oneTask="oneTask"
-        :editedTask="editedTask"
         @showTasks="showTasks"
+        @editOne='editOne'
+        @deleteOne='deleteOne'
         ></Home>
 
         <AddTask v-else-if="page === `add-page`"
@@ -26,8 +26,9 @@
         ></AddTask>
         
         <EditTask v-else-if="page === `edit-page`"
-        @editTask="editTask"
+        @editTheTask="editTheTask"
         @changePage="changePage"
+        :theId="theId"
         ></EditTask>
 
     </div>
@@ -53,12 +54,25 @@ export default {
         return {
                 page: `login-page`,
                 tasks: [],
-                oneTask: [],
-                editedTask: [],
-                moveTask: []
+                baseURL: `http://localhost:3000/`,
+                theId: 0
             }
         },
     methods: {
+        editOne(id){
+            if(id){
+                this.theId = id
+                this.page = `edit-page`
+            }
+        },
+        deleteOne(id){
+            if(id){
+                console.log(id,'ini masuk deleteOne dan masuk the idnya <<<<')
+                this.theId = id
+                this.deleteTask(this.theId)
+                this.page = `home-page`
+            }
+        },
         changePage: function (to) {
             this.page = to;
         },
@@ -123,11 +137,12 @@ export default {
         showTasks(){
             axios({
                 method: `GET`,
-                url: baseURL + `tasks`,
+                url:  baseURL + `tasks`,
+                headers: { access_token: localStorage.access_token },
             })
                 .then(({data}) => {
-                    console.log(data)
-                    this.tasks = data
+                    console.log(data.task)
+                    this.tasks = data.task
                 })
                 .catch((err) => {
                     console.log(err)
@@ -140,16 +155,18 @@ export default {
                 })
         },
         addTheTask(input){
+            console.log(input,"masuk add task <<<<<")
             const {title, category} = input
             axios({
                 method: `POST`,
                 url: baseURL + `tasks`,
                 data: {
                     title, category
-                }
+                },
+                headers: { access_token: localStorage.access_token },
             })
                 .then((response) => {
-                    console.log(response)
+                    console.log(response,"masuk response add task <<<<<<<<<")
                     Swal.fire({
                         title: "Good job!",
                         text: "You added one task :)",
@@ -171,66 +188,11 @@ export default {
             const {id,title,category} = input
             axios({
                 method: `PATCH`,
-                url: baseURL + `tasks` + id,
+                url: baseURL + `tasks/` + id,
+                headers: { access_token: localStorage.access_token },
             })
                 .then((response) => {
                     console.log(response)
-                    this.oneTask = response.data
-                })
-                .catch((err) => {
-                    console.log(err)
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'There is something wrong !',
-                        footer: '<a href>Please contact J-R4 for further info.</a>'
-                    })
-                })
-        },
-        editTask(input){
-            const {id,title,category} = input
-            axios({
-                method: `PUT`,
-                url: baseURL + `tasks` + id,
-                data: {
-                    title,
-                    category
-                }
-            })
-                .then((response) => {
-                    console.log(response)
-                    this.editedTask = response.data
-                })
-                .catch((err) => {
-                    console.log(err)
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'There is something wrong !',
-                        footer: '<a href>Please contact J-R4 for further info.</a>'
-                    })
-                })
-                .finally(() => {
-                    this.editedTask = []
-                })
-        },
-        moveTheTask(input){
-            const {id,category} = input
-            axios({
-                method: `PATCH`,
-                url: baseURL + `tasks` + id,
-                data: {
-                    category
-                }
-            })
-                .then((response) => {
-                    console.log(response)
-                    Swal.fire({
-                        title: "Good job!",
-                        text: "You have move the task !",
-                        icon: "success",
-                    })
-                    this.moveTask = response.data
                 })
                 .catch((err) => {
                     console.log(err)
@@ -242,20 +204,55 @@ export default {
                     })
                 })
                 .finally(()=> {
-                    this.moveTask = []
+                    this.theId = 0
                 })
         },
-        deleteTask(input){
-            const {id} = input
+        editTheTask(input){
+            const {id,title,category} = input
             axios({
-                method: `DELETE`,
-                url: baseURL + `tasks` + id
+                method: `PUT`,
+                url: baseURL + `tasks/` + id,
+                data: {
+                    title,
+                    category
+                },
+                headers: { access_token: localStorage.access_token },
+            })
+                .then((response) => {
+                    Swal.fire({
+                        title: "Good job!",
+                        text: "You edited the task :)",
+                        icon: "success",
+                    })
+                    this.page = `home-page`
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'There is something wrong !',
+                        footer: '<a href>Please contact J-R4 for further info.</a>'
+                    })
+                })
+                .finally(()=> {
+                    this.theId = 0
+                })
+        },
+        moveTheTask(input){
+            const {id,category} = input
+            axios({
+                method: `PATCH`,
+                url: baseURL + `tasks/` + id,
+                data: {
+                    category
+                },
+                headers: { access_token: localStorage.access_token },
             })
                 .then((response) => {
                     console.log(response)
                     Swal.fire({
                         title: "Good job!",
-                        text: "You have deleted the task!",
+                        text: "You have move the task !",
                         icon: "success",
                     })
                     this.page = `home-page`
@@ -269,15 +266,52 @@ export default {
                         footer: '<a href>Please contact J-R4 for further info.</a>'
                     })
                 })
+                .finally(()=> {
+                    this.theId = 0
+                })
+        },
+        deleteTask(input){
+            const id = input
+            axios({
+                method: `DELETE`,
+                url: baseURL + `tasks/` + id,
+                headers: { access_token: localStorage.access_token },
+            })
+                .then((response) => {
+                    console.log(response)
+                    Swal.fire({
+                        title: "Good job!",
+                        text: `You have deleted the task!`,
+                        icon: "success",
+                    })
+                    this.showTasks()
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'There is something wrong !',
+                        footer: '<a href>Please contact J-R4 for further info.</a>'
+                    })
+                })
+                .finally(()=> {
+                    this.theId = 0
+                })
         },
         logout(){
             Swal.fire({
                 title: "Thank You!",
-                text: "Glad to have u here, c u soon :)",
+                text: "Glad to have you here, see you soon Good People :)",
                 icon: "success",
             })
             localStorage.removeItem('access_token')
             this.page = `login-page`
+        }
+    },
+    beforeCreated(){
+        if(localStorage.getItem('access_token')){
+            this.page =`home-page`
         }
     },
     created(){
@@ -299,7 +333,7 @@ export default {
         margin: 0;
         padding: 0;
     }
-
+    
     .theCard-sub {
         background-color: black;
         border-color: white !important;

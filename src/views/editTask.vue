@@ -41,7 +41,7 @@
                   </div>
 
                   <button type="submit" class="button is-black"
-                      @click.prevent="editOne && changePage('home-page')">Edit task</button>
+                      @click.prevent="editOne">Edit task</button>
                   <button id="link-register-reg" class="button is-white" style="border-color:grey;"
                       @click.prevent="changePage('home-page')">Cancel</button>
                   <br><br>
@@ -54,6 +54,7 @@
 <script>
 export default {
     name: `editTask`,
+    props: ['theId'],
     data(){
       return {
         title: ``,
@@ -65,7 +66,8 @@ export default {
             this.$emit(`changePage`,page)
         },
         editOne(){
-            this.$emit(`editTask`,{
+            this.$emit(`editTheTask`,{
+                id: this.theId,
                 title: this.title,
                 category: this.category
             })

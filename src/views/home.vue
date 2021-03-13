@@ -12,6 +12,9 @@
                     :categories='categories'
                     :category='category.type'
                     :tasks='tasks'
+                    :theId='theId'
+                    @editOne='editOne'
+                    @deleteOne='deleteOne'
                     ></Category>
                 </div>
                 <!-- this is the end of kanban content -->
@@ -28,14 +31,14 @@ import Category from "../components/category.vue"
 
 export default {
     name: `home`,
-    props: [`tasks`,`oneTask`,`moveTask`,`editedTask`],
+    props: [`tasks`,`theId`],
     components: {
         Navbar, Category
     },
     data() {
         return {
             categories: [
-                {type:`Backlog`},{type:`Todo`},{type:`Done`},{type:`Completed`}],
+                {type:`Backlog`},{type:`Todo`},{type:`Doing`},{type:`Done`}],
         }
     },
     methods: {
@@ -44,9 +47,15 @@ export default {
         },
         changePage(page){
             this.$emit(`changePage`,page)
+        },
+        editOne(id){
+        this.$emit(`editOne`,id)
+        },
+        deleteOne(id){
+            this.$emit(`deleteOne`,id)
         }
     },
-  created: function() {
+  mounted: function(){
     this.$emit("showTasks")
   }
 }

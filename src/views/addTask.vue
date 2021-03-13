@@ -34,14 +34,14 @@
                               <option>Backlog</option>
                               <option>Todo</option>
                               <option>Doing</option>
-                              <option>Completed</option>
+                              <option>Done</option>
                             </select>
                           </div>
                       </div>
                   </div>
 
                   <button type="submit" class="button is-black"
-                      @click.prevent="addOne && changePage('home-page')">Add task</button>
+                      @click.prevent="addOne">Add task</button>
                   <button id="link-register-reg" class="button is-white" style="border-color:grey;"
                       @click.prevent="changePage('home-page')">Cancel</button>
                   <br><br>
