@@ -4,6 +4,9 @@
         @login="login" 
         @changePage="changePage"
         @onGoogle="onGoogle"
+        @gSuccess="gSuccess"
+        @dataUser="dataUser"
+        :baseURL="baseURL"
         ></Login>
 
         <Register v-else-if="page === `register-page`" 
@@ -52,7 +55,7 @@ import Home from "./views/home.vue"
 import AddTask from "./views/addTask.vue"
 import EditTask from "./views/editTask.vue"
 
-const baseURL = `http://localhost:3000/`
+const baseURL = `https://kanban-bw-app.herokuapp.com/`
 
 export default {
     name: `kanbanBW-app`,
@@ -63,13 +66,27 @@ export default {
         return {
                 page: `login-page`,
                 tasks: [],
-                baseURL: `http://localhost:3000/`,
+                baseURL: `https://localhost:3000/`, // for local usage only
                 theId: 0,
                 theEmail: ``,
-                isGoogle: false
+                isGoogle: false,
+                gId: 0,
+                gEmail: ``,
+                google_access_token: ``,
+                time: 0, 
+                isIdle: false
             }
         },
     methods: {
+        gSuccess(data){
+            this.isGoogle = true
+            this.google_access_token = data
+            this.showTasks()
+        },
+        dataUser(data){
+            this.gId = data.id
+            this.gEmail = data.email
+        },
         editOne(id){
             if(id){
                 this.theId = id
@@ -109,7 +126,6 @@ export default {
                 }
             })
                 .then((response) => {
-                    console.log(response)
                     Swal.fire({
                         title: "Good job!",
                         text: "You have been logged in!",
@@ -139,7 +155,6 @@ export default {
                 },
             })
                 .then((response) => {
-                    console.log(response)
                     Swal.fire({
                         title: "Good job!",
                         text: "You have been logged in!",
@@ -173,7 +188,6 @@ export default {
                 }
             })
                 .then((response) => {
-                    console.log(response)
                     Swal.fire({
                         title: "Good job!",
                         text: "Your account is ready to be logged in!",
@@ -198,7 +212,6 @@ export default {
                 headers: { access_token: localStorage.access_token },
             })
                 .then(({data}) => {
-                    console.log(data.task)
                     this.tasks = data.task
                 })
                 .catch((err) => {
@@ -212,7 +225,6 @@ export default {
                 })
         },
         addTheTask(input){
-            console.log(input,"masuk add task <<<<<")
             const {title, category} = input
             axios({
                 method: `POST`,
@@ -223,7 +235,6 @@ export default {
                 headers: { access_token: localStorage.access_token },
             })
                 .then((response) => {
-                    console.log(response,"masuk response add task <<<<<<<<<")
                     Swal.fire({
                         title: "Good job!",
                         text: "You added one task :)",
@@ -284,6 +295,7 @@ export default {
                     this.page = `home-page`
                 })
                 .catch((err) => {
+                    console.log(err)
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -306,7 +318,6 @@ export default {
                 headers: { access_token: localStorage.access_token },
             })
                 .then((response) => {
-                    console.log(response)
                     Swal.fire({
                         title: "Good job!",
                         text: "You have move the task !",
@@ -335,7 +346,6 @@ export default {
                 headers: { access_token: localStorage.access_token },
             })
                 .then((response) => {
-                    console.log(response)
                     Swal.fire({
                         title: "Good job!",
                         text: `You have deleted the task!`,
@@ -373,6 +383,17 @@ export default {
                 localStorage.removeItem('access_token')
                 this.isGoogle = false
                 this.page = `login-page`
+                this.google_access_token = ``
+                this.gId = 0,
+                this.gEmail = ``
+            } else if(this.isIdle){
+                Swal.fire({
+                    title: "Thank You!",
+                    text: `For you own protection, we automatically logout you, see you soon Good People :)`,
+                    icon: "success",
+                })
+                localStorage.removeItem('access_token')
+                this.page = `login-page`
             } else {
                 Swal.fire({
                     title: "Thank You!",
@@ -386,9 +407,21 @@ export default {
     },
     created(){
         if(localStorage.getItem('access_token')){
+            this.time = 300000 // 5 minutes
+            //! idling handler
+            let timerId = setInterval(() => {
+            this.time -= 1000;
+            if (this.time < 1) {
+                console.log(`logout !!`)
+                clearInterval(timerId);
+                this.isIdle = true
+                this.logout()
+                this.time = 0
+            }
+            }, 1000);
+
             this.page =`home-page`
-        } else if(!localStorage.promo){
-            console.log(`masuk`)
+            this.isIdle = false
         }
     }
 };
