@@ -75,9 +75,7 @@
                             </form>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
         <!-- This is the end of login page -->
@@ -94,13 +92,20 @@ export default {
     components: {
         GoogleSignInButton,GoogleLogin
     },
+    props: [`baseURL`],
     data() {
         return {
             params: {
                     client_id: "641781171342-18velpmujtc06m2n7gtlbsfcnaqhpj1o.apps.googleusercontent.com"
                 },
             email:``,
-            password:``
+            password:``,
+            params: {
+                client_id: '641781171342-18velpmujtc06m2n7gtlbsfcnaqhpj1o.apps.googleusercontent.com'
+            },
+            googleSignInParams: {
+                 client_id: '641781171342-18velpmujtc06m2n7gtlbsfcnaqhpj1o.apps.googleusercontent.com'
+            }
         }
     },
     methods: {
@@ -112,6 +117,40 @@ export default {
                 email: this.email,
                 password: this.password
             })
+        // =========== ini untuk google sign in ==============
+        },onSignInSuccess (googleUser) {
+        // console.log('ini dari axios on success')
+
+        let id_token = googleUser.getAuthResponse().id_token;
+        // console.log(id_token, "ini id token");
+        axios({
+            url: `${this.baseURL}oAuth`,
+            method: "POST",
+            data: {
+            google_token: id_token
+            }
+        })
+        .then((response) => {
+            // console.log(response, 'masukk then');
+            Swal.fire({
+                title: "Good job!",
+                text: "You have been logged in!",
+                icon: "success",
+            })
+            localStorage.setItem("access_token", response.data.access_token);
+            this.$emit('gSuccess', response.data.access_token);
+            this.$emit('dataUser', {id: response.data.id, email: response.data.email});
+            this.changePage(`home-page`)
+        })
+        .catch((err) => {
+            console.log(err)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'There is something wrong in your input!',
+                footer: '<a href>Please contact J-R4 for further info.</a>'
+            })
+        })
         },
         // =========== ini untuk google sign in ==============
         onSignInSuccess (googleUser) {

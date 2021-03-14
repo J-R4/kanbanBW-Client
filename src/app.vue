@@ -102,7 +102,6 @@ export default {
         },
         moveOne(cat){
             if(cat){
-                console.log(cat,'ini masuk moveOne dan masuk the cat <<<<')
                 this.theId = cat.id
                 this.moveTheTask(cat)
                 this.page = `home-page`
@@ -120,7 +119,7 @@ export default {
             const {email,password} = input
             axios({
                 method: `POST`,
-                url: baseURL + `login`,
+                url: this.baseURL + `login`,
                 data: {
                     email,password
                 }
@@ -137,7 +136,6 @@ export default {
                     this.showTasks()
                 })
                 .catch((err) => {
-                    console.log(err)
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -149,7 +147,7 @@ export default {
         googleLogin(input){
             axios({
                 method: 'POST',
-                url: baseURL + '/oAuth',
+                url: this.baseURL + '/oAuth',
                 data: {
                     google_token: input,
                 },
@@ -182,7 +180,7 @@ export default {
             const {email,password} = input
             axios({
                 method: `POST`,
-                url: baseURL + `register`,
+                url: this.baseURL + `register`,
                 data: {
                     email,password
                 }
@@ -196,7 +194,6 @@ export default {
                     this.page = 'login-page'
                 })
                 .catch((err) => {
-                    console.log(err)
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -208,14 +205,13 @@ export default {
         showTasks(){
             axios({
                 method: `GET`,
-                url:  baseURL + `tasks`,
+                url:  this.baseURL + `tasks`,
                 headers: { access_token: localStorage.access_token },
             })
                 .then(({data}) => {
                     this.tasks = data.task
                 })
                 .catch((err) => {
-                    console.log(err)
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -228,7 +224,7 @@ export default {
             const {title, category} = input
             axios({
                 method: `POST`,
-                url: baseURL + `tasks`,
+                url: this.baseURL + `tasks`,
                 data: {
                     title, category
                 },
@@ -256,7 +252,7 @@ export default {
             const id = input
             axios({
                 method: `GET`,
-                url: baseURL + `tasks/` + id,
+                url: this.baseURL + `tasks/` + id,
                 headers: { access_token: localStorage.access_token },
             })
                 .then((response) => {
@@ -279,7 +275,7 @@ export default {
             const {id,title,category} = input
             axios({
                 method: `PUT`,
-                url: baseURL + `tasks/` + id,
+                url: this.baseURL + `tasks/` + id,
                 data: {
                     title,
                     category
@@ -311,7 +307,7 @@ export default {
             const {id,category} = input
             axios({
                 method: `PATCH`,
-                url: baseURL + `tasks/` + id,
+                url: this.baseURL + `tasks/` + id,
                 data: {
                     category
                 },
@@ -342,7 +338,7 @@ export default {
             const id = input
             axios({
                 method: `DELETE`,
-                url: baseURL + `tasks/` + id,
+                url: this.baseURL + `tasks/` + id,
                 headers: { access_token: localStorage.access_token },
             })
                 .then((response) => {
@@ -366,7 +362,7 @@ export default {
                     this.theId = 0
                 })
         },
-        logout(){
+        logout(condition){
             if(this.isGoogle){
                 var auth2 = gapi.auth2.getAuthInstance();
                 

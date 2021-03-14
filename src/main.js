@@ -10,6 +10,7 @@ import 'buefy/dist/buefy.css';
 
 Vue.use(Buefy);
 Vue.use(VueAxios, axios);
+
 Vue.use(GoogleLogin);
 Vue.use(GSignInButton);
 
