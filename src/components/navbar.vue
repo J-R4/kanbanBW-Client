@@ -31,7 +31,7 @@
                                 <span class="icon">
                                     <i class="fas fa-sign-out-alt"></i>
                                 </span>
-                                <span>logout</span>
+                                <span><GoogleLogin class='button is-white' :params="params" :logoutButton=true>Logout</GoogleLogin></span>
                             </a>
                         </div>
                     </div>
@@ -42,8 +42,20 @@
 </template>
 
 <script>
+import GoogleLogin from 'vue-google-login';
+
 export default {
     name: `navbar`,
+    data () {
+        return {
+            params: {
+                client_id: '641781171342-18velpmujtc06m2n7gtlbsfcnaqhpj1o.apps.googleusercontent.com'
+            }
+        }
+    },
+    components: {
+        GoogleLogin
+    },
     methods: {
         logout(){
             this.$emit(`emitLogout`)
@@ -56,5 +68,4 @@ export default {
 </script>
 
 <style>
-
 </style>

@@ -20,7 +20,7 @@
               <!-- select -->
               <div class="box" style="margin: 0px; padding: 25px;" v-show="moveDD">
                 <div class="select is-small">
-                  <select v-model="theCat">
+                  <select @click=" editIt" v-model="theCat">
                     <option value="Backlog">Move to Backlog</option>
                     <option value="Todo">Move to Todo</option>
                     <option value="Doing">Move to Doing</option>

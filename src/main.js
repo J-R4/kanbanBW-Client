@@ -4,14 +4,17 @@ import App from './app.vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import GoogleLogin from 'vue-google-login';
+import GSignInButton from 'vue-google-signin-button';
 
 import 'buefy/dist/buefy.css';
 
 Vue.use(Buefy);
 Vue.use(VueAxios, axios);
-Vue.use(GoogleLogin);
 
-new Vue({
+Vue.use(GoogleLogin);
+Vue.use(GSignInButton);
+
+const kanbanBWapp = new Vue({
     render: (h) => h(App),
 }).$mount('#kanbanBW-app');
 
